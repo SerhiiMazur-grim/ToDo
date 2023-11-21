@@ -1,22 +1,43 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(BaseUserManager):
-    
-    def email_validator(self, email):
-        try:
-            validate_email(email)
-        except ValidationError:
-            raise ValueError(_('You must provide a valid email'))
-    
-    
+    """
+    Custom manager for the CustomUserModel.
+
+    Methods:
+        create_user: Creates a basic user with required fields and default permissions.
+        create_superuser: Creates a superuser with additional staff and superuser permissions.
+        update_user: Updates the user's attributes and password.
+
+    Notes:
+        This manager provides methods for creating, updating, and managing users.
+        It handles field validations and necessary checks while creating or updating users.
+    """
+           
     def create_user(self, first_name, last_name, email, password, **extra_fields):
+        """
+        Create a basic user.
+
+        Args:
+            first_name (str): The user's first name.
+            last_name (str): The user's last name.
+            email (str): The user's email address.
+            password (str): The user's password.
+            **extra_fields: Additional fields for user creation.
+
+        Returns:
+            User: The created user object.
+
+        Raises:
+            ValueError: If required fields are missing.
+        """
+        
         if email:
             email = self.normalize_email(email)
-            self.email_validator(email)
+            validate_email(email)
         else:
             raise ValueError(_('Base User: and email address is reauired'))
         
@@ -44,6 +65,23 @@ class CustomUserManager(BaseUserManager):
     
     
     def create_superuser(self, first_name, last_name, email, password, **extra_fields):
+        """
+        Create a superuser.
+
+        Args:
+            first_name (str): The superuser's first name.
+            last_name (str): The superuser's last name.
+            email (str): The superuser's email address.
+            password (str): The superuser's password.
+            **extra_fields: Additional fields for superuser creation.
+
+        Returns:
+            User: The created superuser object.
+
+        Raises:
+            ValueError: If required fields are missing or superuser permissions are incorrect.
+        """
+        
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -59,17 +97,28 @@ class CustomUserManager(BaseUserManager):
 
         if email:
             email = self.normalize_email(email)
-            self.email_validator(email)
+            validate_email(email)
         else:
             raise ValueError(_('Admin User: and email address is required'))
         
         user = self.create_user(first_name, last_name, email, password, **extra_fields)
         
-        user.save()
         return user
     
     
     def update_user(self, user, password=None, **extra_fields):
+        """
+        Update an existing user.
+
+        Args:
+            user (User): The user object to update.
+            password (str): The new password for the user (optional).
+            **extra_fields: Additional fields to update.
+
+        Returns:
+            User: The updated user object.
+        """
+        
         if password is not None:
             user.set_password(password)
 

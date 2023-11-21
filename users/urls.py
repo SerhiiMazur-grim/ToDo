@@ -1,20 +1,16 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path
 
-from .views import (UserApiCrtRetListDelViewSet,
-                    UserUpdateApiView,
+from .views import (UserApiViewSet,
                     UserUpdatePasswordApiView
                     )
 
 
 router = DefaultRouter()
-router.register(r'users', UserApiCrtRetListDelViewSet)
+router.register(r'users', UserApiViewSet)
 
 urlpatterns = [
-    path('users/<int:pk>/update/',
-         UserUpdateApiView.as_view()),
-    
-    path('users/<int:pk>/update-password/',
+     path('users/<int:pk>/change-password/',
          UserUpdatePasswordApiView.as_view()),
 ]
 
