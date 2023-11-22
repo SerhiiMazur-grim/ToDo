@@ -1,5 +1,4 @@
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework import permissions, status
 from rest_framework.response import Response
@@ -51,7 +50,7 @@ class UserApiViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
     
 
-class UserUpdatePasswordApiView(APIView):
+class UserChangePasswordApiView(APIView):
     """
     A view to update a User's password.
 
