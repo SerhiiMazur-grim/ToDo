@@ -14,7 +14,8 @@ User = get_user_model()
 class UserApiViewSetTestCase(TestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
-        self.view = UserApiViewSet.as_view({'get': 'list', 'get': 'retrieve', 'post': 'create', 'patch': 'partial_update', 'delete': 'destroy'})
+        self.view = UserApiViewSet.as_view({'get': 'list', 'get': 'retrieve', 'post': 'create',
+                                            'patch': 'partial_update', 'delete': 'destroy'})
         self.get_token_view = TokenObtainPairView.as_view()
         self.change_pass_view = UserChangePasswordApiView.as_view()
         

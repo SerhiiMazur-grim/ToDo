@@ -9,6 +9,10 @@ class IsOwner(BasePermission):
     message = 'You do not have permission to perform this action.'
     
     def has_object_permission(self, request, view, obj):
+        
+        if hasattr(obj, 'owner'):
+            return request.user == obj.owner
+        
         return request.user == obj
 
 
