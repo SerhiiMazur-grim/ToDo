@@ -71,6 +71,7 @@ class TaskApiTests(APITestCase):
         task_1, task_2 = self.create_tasks(self.task_data_1_user_1, self.task_data_2_user_1)
         self.api_authentication(self.user_1)
         response = self.client.get('/api/tasks/')
+        print(response.data)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data[0]['title'], task_1.title)
@@ -163,18 +164,7 @@ class TaskApiTests(APITestCase):
             self.task_data_4_user_2
         )
         self.api_authentication(self.admin)
-        response = self.client.get(f'/api/tasks/all/')
+        response = self.client.get(f'/api/tasks/')
+        print(response.data)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
-    def test_all_tasks_for_user(self):
-        self.create_tasks(
-            self.task_data_1_user_1,
-            self.task_data_2_user_1,
-            self.task_data_3_user_2,
-            self.task_data_4_user_2
-        )
-        self.api_authentication(self.user_1)
-        response = self.client.get(f'/api/tasks/all/')
-        
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

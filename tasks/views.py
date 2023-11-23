@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from .serializers import TaskSerializer
 from .models import Task
-from users.permissions import IsOwner
+from users.permissions import IsOwner, IsOwnerOrAdmin
 
 
 class TaskModelViewSet(ModelViewSet):
@@ -13,17 +13,24 @@ class TaskModelViewSet(ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [IsOwner]
     
-    def list(self, request, *args, **kwargs):
-        queryset = self.queryset.filter(owner=request.user)
-        serializer = self.serializer_class(queryset, many=True)
-        
-        return Response(serializer.data, status.HTTP_200_OK)
-
-
-class TaskListView(APIView):
-    permission_classes = [permissions.IsAdminUser]
+    def get_permissions(self):
+        if self.action == 'list':
+            return [IsOwnerOrAdmin()]
+        return super().get_permissions()
     
-    def get(self, request):
-        tasks = Task.objects.all()
-        serializer = TaskSerializer(tasks, many=True)
+    def list(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            queryset = self.get_queryset()
+        else:
+            queryset = self.queryset.filter(owner=request.user)
+        serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
+
+
+# class TaskListView(APIView):
+#     permission_classes = [permissions.IsAdminUser]
+    
+#     def get(self, request):
+#         tasks = Task.objects.all()
+#         serializer = TaskSerializer(tasks, many=True)
+#         return Response(serializer.data, status.HTTP_200_OK)
