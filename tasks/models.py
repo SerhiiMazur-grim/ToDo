@@ -7,14 +7,16 @@ User = get_user_model()
 
 
 class Task(models.Model):
+    """
+    Model representing a Task.
+    """
+    
     owner = models.ForeignKey(User, verbose_name=_("Owner"), 
                               on_delete=models.CASCADE, related_name='tasks')
     title = models.CharField(_("Title"), max_length=50)
     description = models.TextField(_("Description"), blank=True, null=True)
     done = models.BooleanField(_("Done"), default=False)
     created = models.DateTimeField(_("Created"), auto_now_add=True)
-    
-    REQUIRED_FIELDS = ['owner', 'title']
     
     class Meta:
         verbose_name = _('Task')
