@@ -1,0 +1,38 @@
+{% extends 'base_templates/base.html' %}
+
+{% block title %}Update Task{% endblock title %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+      <div class="card bg-secondary">
+        <div class="card-header">
+          <h1 class="text-center">Update Task</h1>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              {{ form.title.label_tag }}
+              {{ form.title }}
+              {% if form.title.errors %}
+                <div class="invalid-feedback d-block">{{ form.title.errors|join:", " }}</div>
+              {% endif %}
+            </div>
+            <div class="mb-3">
+              {{ form.description.label_tag }}
+              {{ form.description }}
+              {% if form.description.errors %}
+                <div class="invalid-feedback d-block">{{ form.description.errors|join:", " }}</div>
+              {% endif %}
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Confirm Update</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

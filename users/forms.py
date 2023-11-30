@@ -50,7 +50,3 @@ class CustomUserLoginForm(AuthenticationForm):
                 'class': 'form-control bg-dark text-light',
                 'placeholder': "Password",
                 }))
-
-    # class Meta:
-    #     model = User
-    #     fields = ['email', 'password']

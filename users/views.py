@@ -31,14 +31,14 @@ class CreateUserView(View):
             user.set_password(password)
             user.save()
             
-            return HttpResponseRedirect('/success-url/')
+            return HttpResponseRedirect(reverse_lazy('login'))
             
         return render(request, self.template_name, {'form': form})
 
 
 class UserLoginView(LoginView):
     form_class = CustomUserLoginForm
-    next_page = reverse_lazy('registration')
+    next_page = '/tasks/?done=False'
     template_name = 'users/login.html'
 
 

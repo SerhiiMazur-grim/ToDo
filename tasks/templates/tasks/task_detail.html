@@ -1,0 +1,52 @@
+{% extends 'base_templates/base.html' %}
+
+{% block title %}Detail Task{% endblock title %}
+
+{% block content %}
+  <div class="container mb-5 pb-5">
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-8">
+        <div class="card bg-secondary">
+          <div class="card-header">
+            <h1 class="text-center">Task id: {{ task.pk }}</h1>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item  bg-secondary text-light"><h5>User:</h5> {{ task.owner }}</li>
+              <li class="list-group-item  bg-secondary text-light"><h5>Status:</h5> {{ task.done }}</li>
+              <li class="list-group-item  bg-secondary text-light"><h5>Title:</h5> {{ task.title }}</li>
+              <li class="list-group-item  bg-secondary text-light mb-2"><h5>Description:</h5> {{ task.description }}</li>
+              
+              {% if task.done == False %}
+              
+              <form action="">
+                <a href="{% url "task_update" pk=task.id %}" class="btn btn-primary mt-3 mb-3">Update task</a>
+                </form>
+              {% endif %}
+
+              <div class="mb-3">
+                {% if task.done == False %}
+                <form method="POST" action="" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-success mt-3">Resolve</button>
+                </form>
+                {% endif %}
+
+                {% if task.done == True %}
+                <form method="POST" action="" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-success mt-3">Restore</button>
+                </form>
+                {% endif %}
+                
+              </div>
+
+              
+            </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

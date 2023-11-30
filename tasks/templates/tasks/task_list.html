@@ -1,0 +1,70 @@
+{% extends 'base_templates/base.html' %}
+
+{% block title %}task List{% endblock title %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Task List</h1>
+  
+    <table class="table text-white">
+      <thead>
+          <tr>
+              <th scope="col">#</th>
+              <th scope="col">Owner</th>
+              <th scope="col">Title</th>
+              <th scope="col">Description</th>
+              <th scope="col">Status</th>
+              <th scope="col">Created at</th>
+              <th scope="col"></th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for task in tasks %}
+          <tr>
+              <th scope="row">{{ task.id }}</th>
+              <th scope="row">{{ task.owner }}</th>
+              <td>{{ task.title|slice:":50" }}</td>
+              <td>{{ task.description|slice:":50" }}</td>
+              {% if task.done == False %}
+              <td>In progress</td>
+              {% endif %}
+              {% if task.done == True %}
+              <td>Done</td>
+              {% endif %}
+              <td>{{ task.created }}</td>
+              <td>
+                  <a href="{% url "task_detail" pk=task.id %}" class="btn btn-primary">View</a>
+                  
+                  {% if task.done == True %}
+                  <span class="btn">    
+                      <form action="" method="post">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-success">To In Progress</button>
+                        </form>
+                    </span>
+                    {% endif %}
+                    
+                    {% if task.done == False %}
+                    <a href="{% url "task_update" pk=task.id %}" class="btn btn-primary">Update</a>
+                          <span class="btn">    
+                              <form action="" method="post">
+                                  {% csrf_token %}
+                                  <button type="submit" class="btn btn-success">Resolve</button>
+                              </form>
+                          </span>
+                      {% endif %}
+              </td>
+              
+          </tr>
+          {% empty %}
+          <tr>
+              <td colspan="6">No tasks found.</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+  
+  </div>
+
+{% endblock %}
