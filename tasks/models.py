@@ -10,6 +10,8 @@ class Task(models.Model):
     """
     Model representing a Task.
     """
+    STATUS_DONE = True
+    STATUS_IN_PROGRESS = False
     
     owner = models.ForeignKey(User, verbose_name=_("Owner"), 
                               on_delete=models.CASCADE, related_name='tasks')
@@ -27,3 +29,11 @@ class Task(models.Model):
         
     def __repr__(self):
         return f'<{self.__class__}: {self.title}>'
+    
+    def task_done(self):
+        self.done = self.STATUS_DONE
+        self.save()
+    
+    def task_to_in_progress(self):
+        self.done = self.STATUS_IN_PROGRESS
+        self.save()

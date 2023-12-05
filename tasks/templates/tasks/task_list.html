@@ -38,7 +38,7 @@
                   
                   {% if task.done == True %}
                   <span class="btn">    
-                      <form action="" method="post">
+                      <form action="{% url "task_to_in_progress" pk=task.id %}" method="post">
                           {% csrf_token %}
                           <button type="submit" class="btn btn-success">To In Progress</button>
                         </form>
@@ -48,12 +48,18 @@
                     {% if task.done == False %}
                     <a href="{% url "task_update" pk=task.id %}" class="btn btn-primary">Update</a>
                           <span class="btn">    
-                              <form action="" method="post">
+                              <form action="{% url "task_done" pk=task.id %}" method="post">
                                   {% csrf_token %}
                                   <button type="submit" class="btn btn-success">Resolve</button>
                               </form>
                           </span>
                       {% endif %}
+                      <span class="btn">    
+                        <form action="{% url "task_delete" pk=task.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </span>
               </td>
               
           </tr>

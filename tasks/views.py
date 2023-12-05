@@ -1,8 +1,9 @@
-from django.views import generic
+from django.views import generic, View
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect
 
 from .permissions import IsOwner
 from .forms import TaskForm
@@ -29,12 +30,17 @@ class TaskListView(generic.ListView):
     def get_queryset(self):
         done = self.request.GET.get('done', None)
         if done is None:
-            queryset = Task.objects.filter(owner=self.request.user)
+            queryset = Task.objects.filter(
+                owner=self.request.user
+                ).order_by('done', 'created')
         else:
             
             done.capitalize()
             if done in ('True', 'False'):
-                queryset = Task.objects.filter(owner=self.request.user, done=done)
+                queryset = Task.objects.filter(
+                    owner=self.request.user,
+                    done=done
+                    ).order_by('created')
             else:
                 raise Http404(_("Invalid 'done' parameter provided."))
             
@@ -60,3 +66,48 @@ class TaskUpdateView(IsOwner, generic.UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, 'Task update failed')
         return super().form_invalid(form)
+
+
+class TaskIsDoneView(IsOwner, View):
+    
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
+        task.task_done()
+        messages.success(self.request, 'Task is done!')
+        
+        return redirect('/tasks/?done=False')
+    
+    def get_object(self):
+        object = get_object_or_404(Task, pk=self.kwargs['pk'])
+        
+        return object
+
+
+class TaskToInProgressView(IsOwner, View):
+    
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
+        task.task_to_in_progress()
+        messages.success(self.request, 'Task replace to in progress!')
+        
+        return redirect('/tasks/?done=False')
+    
+    def get_object(self):
+        object = get_object_or_404(Task, pk=self.kwargs['pk'])
+        
+        return object
+
+
+class TaskDeleteView(IsOwner, View):
+    
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
+        task.delete()
+        messages.success(self.request, 'Task is deleted!')
+        
+        return redirect('/tasks/?done=False')
+    
+    def get_object(self):
+        object = get_object_or_404(Task, pk=self.kwargs['pk'])
+        
+        return object
